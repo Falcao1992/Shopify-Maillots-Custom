@@ -1,7 +1,7 @@
-const path = require(`path`)
+const path = require(`path`);
 
 exports.createPages = ({ graphql, actions }) => {
-  const { createPage } = actions
+  const { createPage } = actions;
   return graphql(`
     {
       allShopifyProduct {
@@ -16,7 +16,7 @@ exports.createPages = ({ graphql, actions }) => {
     result.data.allShopifyProduct.edges.forEach(({ node }) => {
       createPage({
         path: `/product/${node.handle}/`,
-        component: path.resolve(`./src/templates/ProductPage/index.js`),
+        component: path.resolve(`./src/templates/ProductPage/ProductPage.js`),
         context: {
           // Data passed to context is available
           // in page queries as GraphQL variables.

@@ -1,0 +1,12 @@
+@import "~normalize.css";
+
+html {
+    box-sizing: border-box;
+    background-color: aliceblue;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
