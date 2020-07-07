@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {StaticQuery, graphql} from 'gatsby'
 import ContextProvider from '../provider/ContextProvider'
-import Navigation from '../components/Navigation'
+import Navigation from '../components/Navigation/Navigation'
 import {createGlobalStyle, ThemeProvider} from "styled-components";
 import theme from "../../resources/theme";
 import "./layout.css"
@@ -24,14 +24,14 @@ const Layout = ({children}) => {
                              render={data => (
                                  <>
                                      <Navigation siteTitle={data.site.siteMetadata.title}/>
-                                     <div>
+                                     <main>
                                          {children}
                                          <footer>
                                              © {new Date().getFullYear()}, Built with
                                              {` `}
                                              <a href="https://www.gatsbyjs.org">Eduardo</a>
                                          </footer>
-                                     </div>
+                                     </main>
                                  </>
                              )}
                 />
@@ -57,6 +57,14 @@ const GlobalStyle = createGlobalStyle`
       box-sizing: inherit;
       margin: 0;
       padding: 0;
+  }
+  main {
+    width: 95%;
+    margin: 6rem auto;
+  }
+  a {
+      color: ${props => props.theme.colors.dark};
+      text-decoration: none;
   }
 `
 

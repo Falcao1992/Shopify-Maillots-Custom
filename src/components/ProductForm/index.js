@@ -64,11 +64,6 @@ const ProductForm = ({product}) => {
     }
 
     const handleAddToCart = () => {
-        console.log(productVariant.shopifyId, "productVariant.shopifyId")
-        console.log(quantity, "quantity")
-        console.log(available, "available")
-        console.log(adding, "adding")
-
         addVariantToCart(productVariant.shopifyId, quantity)
     }
     /*
@@ -104,7 +99,7 @@ const ProductForm = ({product}) => {
         <>
             <h3>{price}</h3>
             {options.map(({id, name, values}, index) => (
-                <React.Fragment key={id}>
+                <div key={id}>
                     <label htmlFor={name}>{name} </label>
                     <select
                         name={name}
@@ -122,9 +117,9 @@ const ProductForm = ({product}) => {
                         ))}
                     </select>
                     <br/>
-                </React.Fragment>
+                </div>
             ))}
-            <label htmlFor="quantity">Quantity </label>
+            <label htmlFor="quantity">Quantity</label>
             <input
                 type="number"
                 id="quantity"

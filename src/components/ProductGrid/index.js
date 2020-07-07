@@ -1,5 +1,6 @@
 import React, {useContext} from 'react'
 import {useStaticQuery, graphql, Link} from 'gatsby'
+import styled from "styled-components";
 
 import StoreContext from '../../context/StoreContext'
 import Image from 'gatsby-image'
@@ -8,37 +9,32 @@ const ProductGrid = () => {
     const {store: {checkout}} = useContext(StoreContext)
     const {allShopifyProduct} = useStaticQuery(
         graphql`
-      query {
-        allShopifyProduct(
-          sort: {
-            fields: [createdAt]
-            order: DESC
-          }
-        ) {
-          edges {
-            node {
-              id
-              title
-              handle
-              createdAt
-              images {
-                id
-                originalSrc
-                localFile {
-                  childImageSharp {
-                    fluid(maxWidth: 910) {
-                      ...GatsbyImageSharpFluid_withWebp_tracedSVG
+            query {
+                allShopifyProduct(sort: {fields: [createdAt]order: DESC}) {
+                    edges {
+                        node {
+                            id
+                            title
+                            handle
+                            createdAt
+                            images {
+                                id
+                                originalSrc
+                            localFile {
+                                childImageSharp {
+                                    fluid(maxWidth: 910) {
+                                        ...GatsbyImageSharpFluid_withWebp_tracedSVG
+                                    }
+                                }
+                            }
+                            }
+                            variants {
+                                price
+                            }
+                        }
                     }
-                  }
                 }
-              }
-              variants {
-                price
-              }
             }
-          }
-        }
-      }
     `
     )
 
@@ -49,10 +45,10 @@ const ProductGrid = () => {
     }).format(parseFloat(price ? price : 0))
 
     return (
-        <div>
+        <ProductGridContainer>
             {allShopifyProduct.edges
                 ? allShopifyProduct.edges.map(({node: {id, handle, title, images: [firstImage], variants: [firstVariant]}}) => (
-                    <div key={id}>
+                    <ProductBlock key={id}>
                         <Link to={`/product/${handle}/`}>
                             {firstImage && firstImage.localFile &&
                             (<Image
@@ -62,11 +58,19 @@ const ProductGrid = () => {
                         </Link>
                         <span>{title}</span>
                         <span>{getPrice(firstVariant.price)}</span>
-                    </div>
+                    </ProductBlock>
                 ))
                 : <p>No Products found!</p>}
-        </div>
+        </ProductGridContainer>
     )
 }
+
+const ProductGridContainer = styled.section`
+    display: flex;
+    margin: ${props => props.theme.spaces.containerSpaceH} auto;
+`
+const ProductBlock = styled.article`
+    
+`
 
 export default ProductGrid
