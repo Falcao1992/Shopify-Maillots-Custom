@@ -24,7 +24,7 @@
     "gatsby-source-shopify": "^3.2.18",
     "gatsby-transformer-sharp": "^2.5.10",
     "js-yaml": "^3.14.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "querystringify": "^2.0.0",
