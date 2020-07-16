@@ -30,7 +30,7 @@ const LineItem = props => {
 
     return (
         <div>
-            {console.log(item)}
+            {console.log(item, "item")}
             <Link to={`/product/${item.variant.product.handle}/`}>
                 {variantImage}
             </Link>

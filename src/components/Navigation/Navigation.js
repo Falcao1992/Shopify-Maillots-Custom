@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {Link} from "gatsby"
 import styled from "styled-components";
 
-import { Icon, InlineIcon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import bxCart from '@iconify/icons-bx/bx-cart';
 
 

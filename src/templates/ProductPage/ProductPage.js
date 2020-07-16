@@ -3,6 +3,7 @@ import {graphql} from 'gatsby'
 
 import SEO from '~/components/seo'
 import ProductForm from '~/components/ProductForm'
+import CanvasTshirt from "../../components/CanvasTshirt/CanvasTshirt";
 import styled from "styled-components";
 import Image from "gatsby-image"
 
@@ -12,7 +13,7 @@ const ProductPage = ({data}) => {
 
     const product = data.shopifyProduct
 
-    console.log(product, "product")
+    //console.log(product, "product")
 
     const selectImagePreview = (e,i) => {
         e.preventDefault()
@@ -23,6 +24,7 @@ const ProductPage = ({data}) => {
         <>
             <SEO title={product.title} description={product.description}/>
             <div>
+                <CanvasTshirt />
                 <div>
                     <h1>{product.title}</h1>
                     {product.images.filter((img,i) => i === imageChoose).map((image) => (
