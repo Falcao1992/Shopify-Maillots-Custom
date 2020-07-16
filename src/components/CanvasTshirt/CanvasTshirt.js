@@ -22,7 +22,7 @@ const CanvasTshirt = () => {
     */
 
     useEffect(() => {
-        const canvas = new fabric.Canvas('logo', {
+        const canvas = new fabric.Canvas('shirtCanvas', {
             preserveObjectStacking: true,
         })
         setCanvas(canvas)
@@ -69,7 +69,7 @@ const CanvasTshirt = () => {
     }
 
 
-    /*
+
     const uploadImage = (e) => {
         const reader = new FileReader();
 
@@ -77,15 +77,11 @@ const CanvasTshirt = () => {
             const imgObj = new Image();
             imgObj.src = event.target.result;
 
-            //console.log(imgObj, "imgObj")
-
             // When the picture loads, create the image in Fabric.js
             imgObj.onload = function () {
                 const img = new fabric.Image(imgObj);
                 console.log(img, "imgCanvas")
-
-                img.scaleToHeight(300);
-                img.scaleToWidth(300);
+                img.scale(0.1)
                 canvas.centerObject(img);
                 canvas.add(img);
                 canvas.renderAll();
@@ -97,7 +93,14 @@ const CanvasTshirt = () => {
         if(e.target.files[0]){
             reader.readAsDataURL(e.target.files[0]);
         }
-    }*/
+    }
+
+    const deleteActiveItem = () => {
+        const activeObject = canvas.getActiveObject()
+        canvas.remove(activeObject)
+        console.log("delete active item")
+        console.log(activeObject, "activeObject")
+    }
 
 
     return (
@@ -108,8 +111,8 @@ const CanvasTshirt = () => {
                     alt="tshirt background"
                     src={modelTshirt}/>
                 <DrawingArea>
-                    <CanvasContainer id="test">
-                        <CanvasStyled id="logo">le caneva styled</CanvasStyled>
+                    <CanvasContainer>
+                        <CanvasStyled id="shirtCanvas">le caneva styled</CanvasStyled>
                     </CanvasContainer>
                 </DrawingArea>
             </BlockCanvasTshirt>
@@ -136,12 +139,14 @@ const CanvasTshirt = () => {
                 </select>
 
                 <br/>
-                <label htmlFor="tshirt-custompicture">Upload your own design:</label>
+                <label htmlFor="tshirt-custompicture">Télécharger une Photo:</label>
                 <input
                     type="file"
                     id="tshirt-custompicture"
-                    //onChange={uploadImage}
+                    onChange={uploadImage}
                 />
+
+                <button type="button" onClick={deleteActiveItem}>Supprimer Item selectionné:</button>
             </BlockOptions>
         </ContainerCanvasTshirt>
 
@@ -161,7 +166,8 @@ const BlockCanvasTshirt = styled.div`
 `
 
 const BlockOptions = styled.div`
-
+    display: flex;
+    flex-direction: column;
 `
 const ModeleTshirtPicture = styled.img`
     width: 100%;
@@ -184,7 +190,7 @@ const CanvasContainer = styled.div`
     height: 100%; 
     position: relative; 
     user-select: none;
-    border: 1px solid blue;
+    border: .5px solid blue;
 `
 
 const CanvasStyled = styled.canvas`
