@@ -1,17 +1,25 @@
-import React, {useEffect, useState, useLayoutEffect} from "react";
+import React, {useEffect, useState, useLayoutEffect, useRef} from "react";
 import styled from "styled-components";
 import modelTshirt from "../../../resources/background_tshirt.png"
 import logoOm from "../../../resources/logoOm.png"
 import batmanSmall from "../../../resources/batman_small.png"
 import {fabric} from "fabric"
+import domtoimage from 'dom-to-image';
 
-const CanvasTshirt = () => {
+const CanvasTshirt = ({shirtImages}) => {
 
 
     const [colorChoose, setColorChoose] = useState("#fff")
     const [canvas, setCanvas] = useState(null)
     const [canvasObjects, setCanvasObjects] = useState(null)
     const [initCanvas, setInitCanvas] = useState(false)
+    const [arrayShirtImages, setArrayShirtImages] = useState(shirtImages)
+
+    const [newImage, setNewImage] = useState(null)
+
+    const [addBorder, setAddBorder] = useState(true)
+
+    const CanvaExport = useRef(null)
 
     /*
     * Method that adds an image to the T-Shirt canvas from a web URL.
@@ -20,6 +28,8 @@ const CanvasTshirt = () => {
     *
     * @return {void} Return value description.
     */
+
+    console.log("arrayShirtImages", arrayShirtImages)
 
     useEffect(() => {
         const canvas = new fabric.Canvas('shirtCanvas', {
@@ -52,10 +62,7 @@ const CanvasTshirt = () => {
             console.log("pas d'item dans le canvas")
         } else {
             const objects = canvas.getObjects('image');
-            console.log("canvas", canvas)
-            console.log("objects", objects)
             setCanvasObjects(objects.length)
-            console.log("canvasObjects", canvasObjects)
             objects.forEach((item, i) => {
                     if (item.aCoords.tl.x < 0) {
                         console.log("l'objets a été supprimé car il ne rentré pas dans le cadre")
@@ -68,19 +75,18 @@ const CanvasTshirt = () => {
         }
     }
 
-
-
     const uploadImage = (e) => {
         const reader = new FileReader();
-
         reader.onload = function (event){
             const imgObj = new Image();
             imgObj.src = event.target.result;
-
             // When the picture loads, create the image in Fabric.js
             imgObj.onload = function () {
                 const img = new fabric.Image(imgObj);
                 console.log(img, "imgCanvas")
+                console.log(canvas.wrapperEl.offsetParent.clientHeight + 1, "canvas.wrapperEl.offsetParent.clientHeight")
+                canvas.setHeight(canvas.wrapperEl.offsetParent.clientHeight);
+                canvas.setWidth(canvas.wrapperEl.offsetParent.clientWidth);
                 img.scale(0.1)
                 canvas.centerObject(img);
                 canvas.add(img);
@@ -98,20 +104,29 @@ const CanvasTshirt = () => {
     const deleteActiveItem = () => {
         const activeObject = canvas.getActiveObject()
         canvas.remove(activeObject)
-        console.log("delete active item")
-        console.log(activeObject, "activeObject")
     }
 
+    const handleImageCustomExport = () => {
+        setAddBorder(false)
+        console.log(CanvaExport.current)
+        domtoimage.toPng(CanvaExport.current, { quality: 1.0 }).then(function (dataUrl) {
+            // Print the data URL of the picture in the Console
+            console.log(dataUrl);
+            setNewImage(dataUrl)
+        }).catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
+    }
 
     return (
         <ContainerCanvasTshirt>
-            <BlockCanvasTshirt>
+            <BlockCanvasTshirt ref={CanvaExport}>
                 <ModeleTshirtPicture
                     colorshirt={colorChoose}
                     alt="tshirt background"
-                    src={modelTshirt}/>
+                    src={arrayShirtImages[0].originalSrc}/>
                 <DrawingArea>
-                    <CanvasContainer>
+                    <CanvasContainer border={addBorder}>
                         <CanvasStyled id="shirtCanvas">le caneva styled</CanvasStyled>
                     </CanvasContainer>
                 </DrawingArea>
@@ -128,7 +143,7 @@ const CanvasTshirt = () => {
                     <option value={logoOm}>Logo Marseille</option>
                     <option value={batmanSmall}>Batman</option>
                 </select>
-                <br/>
+
                 <label htmlFor="tshirt-color">T-Shirt Color:</label>
                 <select id="tshirt-color" onChange={(e) => setColorChoose(e.target.value)}>
                     <option value="#fff">White</option>
@@ -138,7 +153,6 @@ const CanvasTshirt = () => {
                     <option value="#ff0">Yellow</option>
                 </select>
 
-                <br/>
                 <label htmlFor="tshirt-custompicture">Télécharger une Photo:</label>
                 <input
                     type="file"
@@ -147,7 +161,16 @@ const CanvasTshirt = () => {
                 />
 
                 <button type="button" onClick={deleteActiveItem}>Supprimer Item selectionné:</button>
+                <button type="button" onClick={handleImageCustomExport}>Export images:</button>
+                <div>
+                    <input type="checkbox" id="scales" name="scales"
+                           onClick={() => setAddBorder(!addBorder)}
+                           checked={addBorder}
+                    />
+                        <label htmlFor="scales">{addBorder ? 'Enlever' : 'Ajouter'} cadres</label>
+                </div>
             </BlockOptions>
+            {newImage !== null && <a target="_blank" rel="noopener noreferrer" ><img src={newImage} alt={"maillot perso"}/></a>}
         </ContainerCanvasTshirt>
 
     )
@@ -155,14 +178,21 @@ const CanvasTshirt = () => {
 
 const ContainerCanvasTshirt = styled.div`
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+    flex-direction: column;
+    @media screen and (min-width: 750px) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+    }
 `
 
 const BlockCanvasTshirt = styled.div`
-    width: 30%;
+    width: 100%;
     position: relative;
     background-color: #fff;
+    @media screen and (min-width: 750px) {
+        width: 30%;
+    }
 `
 
 const BlockOptions = styled.div`
@@ -186,20 +216,18 @@ const DrawingArea = styled.div`
 `
 
 const CanvasContainer = styled.div`
-    width: 100%; 
-    height: 100%; 
-    position: relative; 
+    width: 100%;
+    height: 100%;
+    position: relative;
     user-select: none;
-    border: .5px solid blue;
+    border: ${props => props.border ? "1px solid blue" : "1px solid transparent"};
 `
 
 const CanvasStyled = styled.canvas`
     position: absolute;
-    //width: inherit !important;
-    //height: inherit !important; 
-    left: 0; 
-    top: 0; 
-    user-select: none; 
+    left: 0;
+    top: 0;
+    user-select: none;
     cursor: default;
 `
 

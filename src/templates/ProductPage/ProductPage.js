@@ -10,10 +10,7 @@ import Image from "gatsby-image"
 const ProductPage = ({data}) => {
 
     const [imageChoose, setImageChoose] = useState(0)
-
     const product = data.shopifyProduct
-
-    //console.log(product, "product")
 
     const selectImagePreview = (e,i) => {
         e.preventDefault()
@@ -24,7 +21,7 @@ const ProductPage = ({data}) => {
         <>
             <SEO title={product.title} description={product.description}/>
             <div>
-                <CanvasTshirt />
+                <CanvasTshirt shirtImages={product.images} />
                 <div>
                     <h1>{product.title}</h1>
                     {product.images.filter((img,i) => i === imageChoose).map((image) => (
